@@ -1,0 +1,4 @@
+---
+- hosts: postgresql_servers
+  roles:
+    - postgres-setup

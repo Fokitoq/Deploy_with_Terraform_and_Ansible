@@ -1,0 +1,78 @@
+---
+- name: Update yum
+  command: sudo yum update -y
+
+- name: Install PostgreSQL
+  become: yes
+  command: amazon-linux-extras install postgresql12=latest -y
+
+- name: Install PostgreSQL packages
+  become: true
+  yum:
+    name:
+      - postgresql.x86_64
+      - postgresql-server.x86_64
+    state: present
+
+- name: Update yum
+  command: sudo yum update -y
+
+
+- name: Initialize PostgreSQL database
+  become: true
+  command: sudo postgresql-setup initdb
+  args:
+    creates: /var/lib/pgsql/data/pg_hba.conf
+
+- name: Start and enable PostgreSQL service
+  become: true
+  service:
+    name: postgresql
+    state: started
+    enabled: yes
+
+
+- name: Create PostgreSQL user
+  become: true
+  become_user: postgres
+  postgresql_user:
+    name: "{{ postgres_user }}"
+    password: "{{ postgres_password }}"
+    state: present
+
+
+- name: Create PostgreSQL database
+  become: true
+  become_user: postgres
+  postgresql_db:
+    name: "{{ postgres_db }}"
+    owner: "{{ postgres_user }}"
+    state: present
+
+
+- name: Set DB access for the new user
+  postgresql_privs:
+    db: '{{ postgres_db }}'
+    role: '{{ postgres_user }}'
+    type: database
+    obj: '{{ postgres_db }}'
+    privs: CONNECT
+  become_user: postgres
+  become: yes
+
+- name: Set table access for the new user
+  postgresql_privs:
+    db: '{{ postgres_db }}'
+    role: '{{ postgres_user }}'
+    objs: ALL_IN_SCHEMA
+    privs: 'INSERT,SELECT,UPDATE,DELETE,TRUNCATE'
+  become_user: postgres
+  become: yes
+
+- name: Add line to pg_hba.conf
+  command: sudo sed -i '$a\host all all 0.0.0.0/0 md5' /var/lib/pgsql/data/pg_hba.conf
+
+- name: Add line to postgresql.conf
+  command: sudo sed -i "/listen/s/\#listen_addresses\ =\ 'localhost'/listen_addresses = '*'/g" /var/lib/pgsql/data/postgresql.conf
+  notify: restart postgresql
+

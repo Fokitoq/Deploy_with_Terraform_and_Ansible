@@ -1,0 +1,12 @@
+---
+- name: run db migration
+  become: yes
+  command: python3.8 manage.py migrate
+  args:
+    chdir: /home/ec2-user/sample-django-main
+  environment:
+     DEBUG: "{{ DEBUG }}"
+     DJANGO_ALLOWED_HOSTS: "{{ DJANGO_ALLOWED_HOSTS }}"
+     DEVELOPMENT_MODE: "{{ DEVELOPMENT_MODE }}"
+     DATABASE_URL: "{{ DATABASE_URL }}"
+  depends_on: Unzip master.zip

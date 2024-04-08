@@ -1,0 +1,6 @@
+---
+- name: Import python tasks
+  import_tasks: python-install.yml
+
+- name: Import nginx-tasks
+  import_tasks: nginx-install.yml

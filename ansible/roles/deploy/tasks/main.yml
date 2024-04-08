@@ -1,0 +1,12 @@
+---
+- name: Import migration task
+  import_tasks: migration.yml
+
+- name: Import packages tasks
+  import_tasks: packages.yml
+
+- name: Import packages tasks
+  import_tasks: run-server.yml
+
+- name: Import packages tasks
+  import_tasks: envs.yml

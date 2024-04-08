@@ -1,0 +1,6 @@
+# vars/main.yml
+
+    postgres_db: django_db
+    postgres_user: django_user
+    postgres_password: 123456
+    postgres_privileges: "ALL"

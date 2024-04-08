@@ -1,0 +1,10 @@
+django_repo_url: https://github.com/Fokitoq/sample-django/archive/refs/heads/main.zip
+DEBUG: True
+DJANGO_ALLOWED_HOSTS: "127.0.0.1,localhost,{{ webserversIPs | join(',') }}"
+DEVELOPMENT_MODE: False
+DATABASE_URL: postgres://django_user:123456@{{ DBIP | join(',') }}:5432/django_db
+
+webserversIPs: "{{ groups['app_servers'] }}"
+DBIP: "{{ groups['postgresql_servers'] }}"
+
+
