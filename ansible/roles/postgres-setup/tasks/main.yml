@@ -1,6 +1,0 @@
----
-- name: Import packages tasks
-  import_tasks: packages.yml
-
-- name: Import configure-db tasks
-  import_tasks: configure-db.yml
